@@ -11,6 +11,8 @@ from opendevin.action import (
     FileReadAction,
     FileWriteAction,
     AgentFinishAction,
+    AddSubtaskAction,
+    CloseSubtaskAction
 )
 from opendevin.observation import (
     Observation,
@@ -102,6 +104,10 @@ class AgentController:
             _kwargs["base_path"] = self.workdir
             action = action_cls(**_kwargs)
             print(action, flush=True)
+        if isinstance(action, AddSubtaskAction):
+            self.state.plan.add_subtask(action.parent, action.goal)
+        elif isinstance(action, CloseSubtaskAction):
+            self.state.plan.close_subtask(action.id)
         if action.executable:
             try:
                 observation = action.run(self)
@@ -127,3 +133,4 @@ class AgentController:
                 print("Callback error:" + str(idx), e, flush=True)
                 pass
         await asyncio.sleep(0.001) # Give back control for a tick, so we can await in callbacks
+>>>>>>> 8750fa1 (more serialization hacks)
