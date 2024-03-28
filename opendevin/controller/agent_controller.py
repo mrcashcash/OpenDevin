@@ -1,3 +1,4 @@
+
 import asyncio
 from typing import List, Callable
 import traceback
@@ -12,7 +13,7 @@ from opendevin.action import (
     FileWriteAction,
     AgentFinishAction,
     AddSubtaskAction,
-    CloseSubtaskAction
+    ModifySubtaskAction
 )
 from opendevin.observation import (
     Observation,
@@ -106,8 +107,8 @@ class AgentController:
             print(action, flush=True)
         if isinstance(action, AddSubtaskAction):
             self.state.plan.add_subtask(action.parent, action.goal)
-        elif isinstance(action, CloseSubtaskAction):
-            self.state.plan.close_subtask(action.id)
+        elif isinstance(action, ModifySubtaskAction):
+            self.state.plan.set_subtask_state(action.id, action.state)
         if action.executable:
             try:
                 observation = action.run(self)
@@ -133,4 +134,3 @@ class AgentController:
                 print("Callback error:" + str(idx), e, flush=True)
                 pass
         await asyncio.sleep(0.001) # Give back control for a tick, so we can await in callbacks
->>>>>>> 8750fa1 (more serialization hacks)
