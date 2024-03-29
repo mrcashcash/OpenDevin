@@ -8,7 +8,7 @@ DEFAULT_MODEL = os.getenv("LLM_MODEL")
 DEFAULT_API_KEY = os.getenv("LLM_API_KEY")
 DEFAULT_BASE_URL = os.getenv("LLM_BASE_URL")
 PROMPT_DEBUG_DIR = os.getenv("PROMPT_DEBUG_DIR", "")
-os.environ['GROQ_API_KEY'] = "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"
+os.environ['GROQ_API_KEY'] = ""
 class LLM:
     def __init__(self, model=DEFAULT_MODEL, api_key=DEFAULT_API_KEY, base_url=DEFAULT_BASE_URL, debug_dir=PROMPT_DEBUG_DIR):
         self.model = model if model else DEFAULT_MODEL
