@@ -30,21 +30,16 @@
         "no-underscore-dangle": "off",
         "jsx-a11y/no-static-element-interactions": "off",
         "jsx-a11y/click-events-have-key-events": "off",
-<<<<<<< Updated upstream
+
         // For https://github.com/airbnb/javascript/issues/1885
-        "jsx-a11y/label-has-associated-control": [ 2, {
-          "required": {
-              "some": [ "nesting", "id" ]
-          }
-        }],        
-        "react/no-array-index-key": "off"
-      },"parserOptions": {
-        "project": ["**/tsconfig.json"]
-      }
-    }
-  ]
-}
-=======
+        "jsx-a11y/label-has-associated-control": [
+          2,
+          {
+            "required": {
+              "some": ["nesting", "id"],
+            },
+          },
+        ],
         "react/no-array-index-key": "off",
       },
       "parserOptions": {
@@ -53,4 +48,3 @@
     },
   ],
 }
->>>>>>> Stashed changes
