@@ -9,11 +9,12 @@ export const MODELS = [
   "claude-3-haiku-20240307",
   "claude-3-sonnet-20240229",
   "claude-3-sonnet-20240307",
+  "groq/mixtral-8x7b-32768",
 ];
 
 export type Model = (typeof MODELS)[number];
 
-export const AGENTS = ["LangchainsAgent", "CodeActAgent"];
+export const AGENTS = ["LangchainsAgent", "CodeActAgent", "KnowledgeAgent"];
 
 export type Agent = (typeof AGENTS)[number];
 

@@ -35,7 +35,7 @@ ACTION_TYPE_TO_CLASS: Dict[str, Type[Action]] = {
 
 
 DEFAULT_WORKSPACE_DIR = os.getenv("WORKSPACE_DIR", os.path.join(os.getcwd(), "workspace"))
-LLM_MODEL = os.getenv("LLM_MODEL", "gpt-4-0125-preview")
+LLM_MODEL = os.getenv("LLM_MODEL", "groq/mixtral-8x7b-32768")
 
 def parse_event(data):
     if "action" not in data:
@@ -76,10 +76,12 @@ class Session:
             print("Error sending data to client", e)
 
     async def start_listening(self):
+        print("Starting",self.websocket)
         try:
             while True:
                 try:
                     data = await self.websocket.receive_json()
+                    print("Received data from client ",data)    
                 except ValueError:
                     await self.send_error("Invalid JSON")
                     continue
@@ -92,6 +94,8 @@ class Session:
                     await self.create_controller(event)
                 elif event["action"] == "start":
                     await self.start_task(event)
+                elif event["action"] == "scan":
+                    await self.scan(event)
                 else:
                     if self.controller is None:
                         await self.send_error("No agent started. Please wait a second...")
@@ -145,7 +149,9 @@ class Session:
             await self.send_error("No agent started. Please wait a second...")
             return
         self.agent_task = asyncio.create_task(self.controller.start_loop(task), name="agent loop")
-
+    async def scan(self, start_event):
+        await self.send_message("Starting new Scan..:-")
+        return
     def on_agent_event(self, event: Observation | Action):
         # FIXME: we need better serialization
         event_dict = event.to_dict()

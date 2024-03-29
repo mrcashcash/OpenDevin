@@ -7,8 +7,15 @@ import CodeEditor from "./components/CodeEditor";
 import Browser from "./components/Browser";
 import Errors from "./components/Errors";
 import BannerSettings from "./components/BannerSettings";
+import Database from "./components/Database";
 
-const TAB_OPTIONS = ["terminal", "planner", "code", "browser"] as const;
+const TAB_OPTIONS = [
+  "terminal",
+  "planner",
+  "code",
+  "browser",
+  "database",
+] as const;
 type TabOption = (typeof TAB_OPTIONS)[number];
 
 type TabProps = {
@@ -43,6 +50,10 @@ const tabData = {
   browser: {
     name: "Browser",
     component: <Browser key="browser" />,
+  },
+  database: {
+    name: "Database",
+    component: <Database key="database" />,
   },
 };
 

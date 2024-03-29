@@ -16,7 +16,7 @@ function ModelSelect(): JSX.Element {
       className="select max-w-xs bg-base-300 xl:w-full w-1/3"
     >
       {MODELS.map((model) => (
-        <option>{model}</option>
+        <option key={model}>{model}</option>
       ))}
     </select>
   );
@@ -31,7 +31,7 @@ function AgentSelect(): JSX.Element {
       className="select max-w-xs bg-base-300 xl:w-full w-1/3"
     >
       {AGENTS.map((agent) => (
-        <option>{agent}</option>
+        <option key={agent}>{agent}</option>
       ))}
     </select>
   );
