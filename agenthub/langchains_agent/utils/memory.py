@@ -8,7 +8,7 @@ from opendevin import config
 from . import json
 
 embedding_strategy = config.get_or_default("LLM_EMBEDDING_MODEL", "local")
-
+KNOWLEDGE_DIR = config.get_or_none("KNOWLEDGE_DIR")
 # TODO: More embeddings: https://docs.llamaindex.ai/en/stable/examples/embeddings/OpenAI/
 # There's probably a more programmatic way to do this.
 if embedding_strategy == "llama2":
@@ -40,10 +40,10 @@ else:
 
 
 class LongTermMemory:
-    def __init__(self):
+    def __init__(self, name="memories"):
         db = chromadb.Client()
-        self.collection = db.get_or_create_collection(name="memories")
-        vector_store = ChromaVectorStore(chroma_collection=self.collection)
+        self.collection = db.get_or_create_collection(name=name)
+        vector_store = ChromaVectorStore(chroma_collection=self.collection,persist_dir=KNOWLEDGE_DIR)
         self.index = VectorStoreIndex.from_vector_store(vector_store, embed_model=embed_model)
         self.thought_idx = 0
 

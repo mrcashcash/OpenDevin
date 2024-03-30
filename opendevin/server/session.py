@@ -9,6 +9,7 @@ from opendevin.action import (
     Action,
     NullAction,
 )
+from opendevin.controller.knowledge_manager import KnowledgeManager
 from opendevin.observation import NullObservation
 from opendevin.agent import Agent
 from opendevin.controller import AgentController
@@ -67,6 +68,8 @@ class Session:
 
                     elif action == "chat":
                         self.controller.add_history(NullAction(), UserMessageObservation(data["message"]))
+                    elif action == "scan":
+                        await self.scan(data)
                     else:
                         # TODO: we only need to implement user message for now
                         # since even Devin does not support having the user taking other
@@ -121,7 +124,10 @@ class Session:
             return
         self.agent_task = asyncio.create_task(self.controller.start_loop(task), name="agent loop")
     async def scan(self, start_event):
+        url = start_event["args"]["task"]
         await self.send_message("Starting new Scan..:-")
+        knowledge_manager = KnowledgeManager(url)
+        self.agent_task = asyncio.create_task(knowledge_manager.strat_process(url), name="process")
         return
     def on_agent_event(self, event: Observation | Action):
         if isinstance(event, NullAction):

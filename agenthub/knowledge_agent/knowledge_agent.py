@@ -3,6 +3,7 @@ from typing import List, Mapping
 
 from termcolor import colored
 
+from agenthub.langchains_agent.utils.memory import LongTermMemory
 from opendevin.agent import Agent
 from opendevin.state import State
 from opendevin.action import (
@@ -67,6 +68,7 @@ class KnowledgeAgent(Agent):
         """
         super().__init__(llm)
         self.messages: List[Mapping[str, str]] = []
+        self.knowledge = LongTermMemory(name="knowledge")
 
     def step(self, state: State) -> Action:
         if len(self.messages) == 0:
