@@ -5,4 +5,4 @@ load_dotenv()
 from . import langchains_agent # noqa: E402
 from . import codeact_agent # noqa: E402
 from . import knowledge_agent # noqa: E402
-__all__ = ['langchains_agent', 'codeact_agent','knowledge_agent']
+__all__ = ['langchains_agent', 'codeact_agent','knowledge_agent', 'planner_agent']
