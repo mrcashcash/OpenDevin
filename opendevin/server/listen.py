@@ -23,6 +23,12 @@ async def websocket_endpoint(websocket: WebSocket):
     # TODO: should this use asyncio instead of await?
     await session.start_listening()
 
+@app.get("/litellm-models")
+async def get_litellm_models():
+    """
+    Get all models supported by LiteLLM.
+    """
+    return litellm.model_list
 @app.post("/upload/")
 async def upload_files(files: list[UploadFile] = File(...)):
     try:
