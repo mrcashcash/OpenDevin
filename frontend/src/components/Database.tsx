@@ -30,16 +30,7 @@ function Database(): JSX.Element {
   //   setSelectedFolder(folder);
   // };
   return (
-    <div
-      className="planner"
-      style={{
-        background: "black",
-        padding: "1rem",
-        height: "90%",
-        margin: "1rem",
-        borderRadius: "1rem",
-      }}
-    >
+    <div className="plah-full w-full bg-bg-workspacenner">
       <h1 className="font-bold text-lg">DataBase</h1>
       <div className="join w-full my-3">
         <input
