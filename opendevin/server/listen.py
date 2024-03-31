@@ -36,6 +36,7 @@ async def upload_files(files: list[UploadFile] = File(...)):
             contents = await file.read()
             # Here you can process the file content, save it to disk, or do any other required operation
             print(f"Received file: {file.filename}, size: {len(contents)} bytes")
+            
         return {"detail": f"{len(files)} files uploaded successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

@@ -9,6 +9,7 @@ import CmdLine from "../assets/cmd-line";
 import Calendar from "../assets/calendar";
 import Earth from "../assets/earth";
 import Pencil from "../assets/pencil";
+import Database from "./Database";
 
 const tabData = {
   [TabOption.TERMINAL]: {
@@ -30,6 +31,11 @@ const tabData = {
     name: "Browser",
     icon: <Earth />,
     component: <Browser key="browser" />,
+  },
+  database: {
+    name: "Database",
+    icon: <Earth />,
+    component: <Database key="database" />,
   },
 };
 
