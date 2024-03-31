@@ -1,10 +1,11 @@
+/* eslint-disable react/no-unknown-property */
 /* eslint-disable no-console */
 import React, { useState } from "react";
-import { sendScanMessage } from "../services/knowledgeService";
+import { sendFilesToAPI, sendScanMessage } from "../services/knowledgeService";
 
 function Database(): JSX.Element {
   const [inputValue, setInputValue] = useState("");
-
+  // const [selectedFolder, setSelectedFolder] = useState("");
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>): void {
     setInputValue(event.target.value);
   }
@@ -13,7 +14,21 @@ function Database(): JSX.Element {
     console.log("value", inputValue);
     sendScanMessage(inputValue);
   }
+  function handleFolderChange(
+    event: React.ChangeEvent<HTMLInputElement>,
+  ): void {
+    if (event.target.files) {
+      const filelist = event.target.files;
+      if (filelist.length > 0) {
+        sendFilesToAPI(filelist);
+      }
+    }
+  }
 
+  // const handleFolderChange = (event) => {
+  //   const folder = event.target.files[0];
+  //   setSelectedFolder(folder);
+  // };
   return (
     <div
       className="planner"
@@ -41,8 +56,33 @@ function Database(): JSX.Element {
           Scan
         </button>
       </div>
+      <div className="">
+        <button
+          type="button"
+          className="btn btn-outline btn-primary"
+          onClick={() => document.getElementById("test")!.click()}
+        >
+          Pick Folder
+        </button>
+        <input
+          type="file"
+          directory=""
+          webkitdirectory=""
+          id="test"
+          hidden
+          onChange={handleFolderChange}
+        />
+      </div>
+      {/* {selectedFolder && <p>Selected folder: {selectedFolder}</p>} */}
     </div>
   );
 }
 
 export default Database;
+declare module "react" {
+  interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
+    // extends React's HTMLAttributes
+    directory?: string; // remember to make these attributes optional....
+    webkitdirectory?: string;
+  }
+}

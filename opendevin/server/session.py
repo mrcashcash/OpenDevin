@@ -129,7 +129,7 @@ class Session:
         self.agent_task = asyncio.create_task(self.controller.start_loop(task), name="agent loop")
     async def scan(self, start_event):
         url = start_event["args"]["task"]
-        await self.send_message("Starting new Scan..:-")
+        await self.send_message("Starting new Scan.."+url)
         knowledge_manager = KnowledgeManager(url)
         self.agent_task = asyncio.create_task(knowledge_manager.strat_process(url), name="process")
         return
