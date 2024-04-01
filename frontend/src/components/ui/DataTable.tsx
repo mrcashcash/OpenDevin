@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable import/no-extraneous-dependencies */
 import {
@@ -37,8 +38,14 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
 
 export function DataTable(): JSX.Element {
   const [filesList, setFilesList] = useState<FileData[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedKeys, setSelectedKeys] = useState(new Set(["2"]));
+  const [isLoading, setIsLoading] = useState(true);
+  const [isEmpty, setIsEmpty] = useState(false);
+  const [selectedKeys, setSelectedKeys] = useState(
+    new Set([".\\upload\\server\\listen.py"]),
+  ); //  Key of columkKey ? fileNmae ?
+  const [disabledKeys, setDisabledKeys] = useState(
+    new Set([".\\upload\\server\\datapi\\datapi.py"]),
+  );
 
   const renderCell = useCallback((filedata: FileData, columnKey: React.Key) => {
     const cellValue = filedata[columnKey as keyof FileData];
@@ -60,6 +67,10 @@ export function DataTable(): JSX.Element {
           </Chip>
         );
       case "actions":
+        const handleIngestFile = () => {
+          console.log("Clicked:", filedata.fileName);
+        };
+
         return (
           <div className="relative flex items-center gap-2">
             <Tooltip content="Details">
@@ -68,7 +79,10 @@ export function DataTable(): JSX.Element {
               </span>
             </Tooltip>
             <Tooltip content="Ingest File">
-              <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+              <span
+                onClick={handleIngestFile}
+                className="text-lg text-default-400 cursor-pointer active:opacity-50"
+              >
                 <IconDatabaseArrowLeft />
               </span>
             </Tooltip>
@@ -90,23 +104,31 @@ export function DataTable(): JSX.Element {
       try {
         const res = await getFilesData();
         console.log("res", res);
+        console.log("res.length", res.length);
         setFilesList(res);
+        if (res.length > 0) {
+          setIsEmpty(false);
+        } else {
+          setIsEmpty(true);
+        }
       } catch (err) {
         setFilesList([]);
         toast.error(err);
       } finally {
         setIsLoading(false);
+        setDisabledKeys(new Set(["1"]));
       }
     };
 
     fetchData();
   }, []);
+
   return (
     <Table
       aria-label="Example static collection table"
       selectionMode="multiple"
-      // selectedKeys={selectedKeys}
-      // disabledKeys={["3", "4"]}
+      selectedKeys={selectedKeys}
+      disabledKeys={disabledKeys}
       onSelectionChange={setSelectedKeys}
     >
       <TableHeader columns={columns}>
@@ -119,63 +141,33 @@ export function DataTable(): JSX.Element {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody items={filesList}>
-        {(item) => (
-          <TableRow key={item.fileName}>
-            {(columnKey) => (
-              <TableCell>{renderCell(item, columnKey)}</TableCell>
-            )}
-          </TableRow>
-        )}
-      </TableBody>
+      {isEmpty ? (
+        <TableBody emptyContent="Database is Empty.">{[]}</TableBody>
+      ) : !isLoading ? (
+        <TableBody items={filesList}>
+          {(item) => (
+            <TableRow key={item.fileName}>
+              {(columnKey) => (
+                <TableCell>{renderCell(item, columnKey)}</TableCell>
+              )}
+            </TableRow>
+          )}
+        </TableBody>
+      ) : (
+        <TableBody>
+          {Array.from({ length: 4 }).map((_, rowIndex) => (
+            <TableRow key={rowIndex}>
+              {Array.from({ length: 4 }).map((_, colIndex) => (
+                <TableCell key={`${rowIndex}-${colIndex}`}>
+                  <Skeleton className="w-2/5 rounded-lg">
+                    <div className="h-4 w-2/5 rounded-lg bg-default-300" />
+                  </Skeleton>
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      )}
     </Table>
   );
-}
-// eslint-disable-next-line no-lone-blocks
-{
-  /* 
-      <TableHeader>
-        <TableColumn>NAME</TableColumn>
-        <TableColumn>SIZE</TableColumn>
-        <TableColumn>STATUS</TableColumn>
-        <TableColumn>ACTIONS</TableColumn>
-      </TableHeader>
-
-
-<TableBody>
-{Array.isArray(filesList) && filesList.length > 0 ? (
-  filesList.map((filedata, index) => (
-    <TableRow key={index}>
-      <TableCell>{filedata.fileName}</TableCell>
-      <TableCell>{filedata.size || index}</TableCell>
-      <TableCell>{filedata.status || "Active"}</TableCell>
-    </TableRow>
-  ))
-) : !isLoading ? (
-  <TableRow>
-    <TableCell>No data available</TableCell>
-    <TableCell>No data available</TableCell>
-    <TableCell>No data available</TableCell>
-  </TableRow>
-) : (
-  <TableRow>
-    <TableCell>
-      {" "}
-      <Skeleton className="w-2/5 rounded-lg">
-        <div className="h-4 w-2/5 rounded-lg bg-default-300" />
-      </Skeleton>
-    </TableCell>
-    <TableCell>
-      <Skeleton className="w-2/5 rounded-lg">
-        <div className="h-4 w-2/5 rounded-lg bg-default-300" />
-      </Skeleton>
-    </TableCell>
-    <TableCell>
-      <Skeleton className="w-2/5 rounded-lg">
-        <div className="h-4 w-2/5 rounded-lg bg-default-300" />
-      </Skeleton>
-    </TableCell>
-  </TableRow>
-)}
-</TableBody> */
 }
