@@ -26,7 +26,7 @@ export const INITIAL_MODELS = [
 export type Model = (typeof INITIAL_MODELS)[number];
 
 export const INITIAL_AGENTS = [
-  "LangchainsAgent",
+  "MonologueAgent",
   "CodeActAgent",
   "KnowledgeAgent",
 ];
