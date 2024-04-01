@@ -10,6 +10,7 @@ import Calendar from "../assets/calendar";
 import Earth from "../assets/earth";
 import Pencil from "../assets/pencil";
 import Database from "./Database";
+import IconDatabaseCogOutline from "../assets/databaseicon";
 
 const tabData = {
   [TabOption.TERMINAL]: {
@@ -34,7 +35,7 @@ const tabData = {
   },
   database: {
     name: "Database",
-    icon: <Earth />,
+    icon: <IconDatabaseCogOutline />,
     component: <Database key="database" />,
   },
 };

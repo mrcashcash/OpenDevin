@@ -42,6 +42,6 @@ async def getfiles(directory=UPLOAD_DIRECTORY):
             file_path = os.path.join(root, filename)
             filedata['fileName'] = file_path
             filedata['size'] = os.path.getsize(file_path)
-            filedata['status'] = False
+            filedata['status'] = "unprocessed"
             res.append(filedata)
     return res
