@@ -1,11 +1,41 @@
+import { Card, CardBody, Textarea } from "@nextui-org/react";
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { Card, CardBody } from "@nextui-org/react";
 import assistantAvatar from "../assets/assistant-avatar.png";
-import userAvatar from "../assets/user-avatar.png";
-import { sendChatMessage } from "../services/chatService";
-import { RootState } from "../store";
 import CogTooth from "../assets/cog-tooth";
+import userAvatar from "../assets/user-avatar.png";
+import { useTypingEffect } from "../hooks/useTypingEffect";
+import { sendChatMessage } from "../services/chatService";
+import { Message } from "../state/chatSlice";
+import { RootState } from "../store";
+
+interface ITypingChatProps {
+  msg: Message;
+}
+
+/**
+ * @param msg
+ * @returns jsx
+ *
+ * component used for typing effect when assistant replies
+ *
+ * makes uses of useTypingEffect hook
+ *
+ */
+function TypingChat({ msg }: ITypingChatProps) {
+  return (
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    <>
+      {msg?.content && (
+        <Card>
+          <CardBody>
+            {useTypingEffect([msg?.content], { loop: false })}
+          </CardBody>
+        </Card>
+      )}
+    </>
+  );
+}
 
 function MessageList(): JSX.Element {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -18,20 +48,22 @@ function MessageList(): JSX.Element {
   return (
     <div className="flex-1 overflow-y-auto">
       {messages.map((msg, index) => (
-        <div key={index} className="flex mb-2.5">
+        <div key={index} className="flex mb-2.5 pr-5 pl-5">
           <div
-            className={`${msg.sender === "user" ? "flex flex-row-reverse mt-2.5 mr-2.5 mb-0 ml-auto" : "flex"}`}
+            className={`flex mt-2.5 mb-0 min-w-0 ${msg.sender === "user" && "flex-row-reverse ml-auto"}`}
           >
             <img
               src={msg.sender === "user" ? userAvatar : assistantAvatar}
               alt={`${msg.sender} avatar`}
               className="w-[40px] h-[40px] mx-2.5"
             />
-            <Card
-              className={`w-4/5 ${msg.sender === "user" ? "bg-primary" : ""}`}
-            >
-              <CardBody>{msg.content}</CardBody>
-            </Card>
+            {msg.sender !== "user" ? (
+              <TypingChat msg={msg} />
+            ) : (
+              <Card className="bg-primary">
+                <CardBody>{msg.content}</CardBody>
+              </Card>
+            )}
           </div>
         </div>
       ))}
@@ -80,29 +112,32 @@ function ChatInterface({ setSettingOpen }: Props): JSX.Element {
         </div>
       </div>
       {initialized ? <MessageList /> : <InitializingStatus />}
-      <div className="w-full flex items-center p-5 rounded-none rounded-bl-lg rounded-br-lg">
-        <div className="w-full flex items-center rounded-xl text-base bg-bg-input">
-          <input
-            type="text"
-            className="flex-1 py-4 px-2.5 border-none mx-4 bg-bg-input text-white outline-none"
-            value={inputMessage}
-            onChange={(e) => setInputMessage(e.target.value)}
-            placeholder="Send a message (won't interrupt the Assistant)"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleSendMessage();
-              }
-            }}
-          />
-          <button
-            type="button"
-            className="bg-transparent border-none rounded py-2.5 px-5 hover:opacity-80 cursor-pointer select-none"
-            onClick={handleSendMessage}
-            disabled={!initialized}
-          >
-            Send
-          </button>
-        </div>
+      <div className="w-full relative text-base">
+        <Textarea
+          className="py-4 px-4"
+          classNames={{
+            input: "pr-16 py-2",
+          }}
+          value={inputMessage}
+          maxRows={10}
+          minRows={1}
+          variant="bordered"
+          onChange={(e) => setInputMessage(e.target.value)}
+          placeholder="Send a message (won't interrupt the Assistant)"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              handleSendMessage();
+            }
+          }}
+        />
+        <button
+          type="button"
+          className="bg-transparent border-none rounded py-2.5 px-5 hover:opacity-80 cursor-pointer select-none absolute right-5 bottom-6"
+          onClick={handleSendMessage}
+          disabled={!initialized}
+        >
+          Send
+        </button>
       </div>
     </div>
   );

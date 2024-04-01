@@ -66,16 +66,12 @@ class Session:
                 else:
                     if self.controller is None:
                         await self.send_error("No agent started. Please wait a second...")
-
                     elif action == "chat":
                         self.controller.add_history(NullAction(), UserMessageObservation(data["message"]))
                     elif action == "scan":
                         await self.scan(data)
                     else:
-                        # TODO: we only need to implement user message for now
-                        # since even Devin does not support having the user taking other
-                        # actions (e.g., edit files) while the agent is running
-                        raise NotImplementedError
+                        await self.send_error("I didn't recognize this action:" + action)
 
         except WebSocketDisconnect as e:
             self.websocket = None
