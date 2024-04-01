@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { ToastContainer } from "react-toastify";
 import "./App.css";
 import ChatInterface from "./components/ChatInterface";
 import Errors from "./components/Errors";
 import SettingModal from "./components/SettingModal";
 import Workspace from "./components/Workspace";
+import "react-toastify/dist/ReactToastify.css";
 
 function App(): JSX.Element {
   const [settingOpen, setSettingOpen] = useState(false);
@@ -23,6 +25,7 @@ function App(): JSX.Element {
       </div>
 
       <SettingModal isOpen={settingOpen} onClose={handleCloseModal} />
+      <ToastContainer theme="dark" />
     </div>
   );
 }

@@ -1,62 +1,94 @@
-/* eslint-disable react/no-unknown-property */
 /* eslint-disable no-console */
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
+import { Button, Input } from "@nextui-org/react";
+import { toast } from "react-toastify";
 import { sendFilesToAPI, sendScanMessage } from "../services/knowledgeService";
+import { DataTable } from "./ui/DataTable";
 
 function Database(): JSX.Element {
   const [inputValue, setInputValue] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  // const [filesList, setFilesList] = useState<FileData[]>([]);
+  // const { data, error, status } = useSelector(
+  //   (state: RootState) => state.database,
+  // );
   // const [selectedFolder, setSelectedFolder] = useState("");
-  function handleInputChange(event: React.ChangeEvent<HTMLInputElement>): void {
-    setInputValue(event.target.value);
-  }
+  const handleInputChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>): void => {
+      setInputValue(event.target.value);
+    },
+    [],
+  );
 
-  function handleScan(): void {
+  const handleScan = useCallback((): void => {
     console.log("value", inputValue);
     sendScanMessage(inputValue);
-  }
-  function handleFolderChange(
+  }, [inputValue]);
+  // console.log("status:", status);
+  const handleFolderChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
-  ): void {
+  ) => {
+    setIsLoading(true);
     if (event.target.files) {
       const filelist = event.target.files;
       if (filelist.length > 0) {
-        sendFilesToAPI(filelist);
+        try {
+          const res = await sendFilesToAPI(filelist);
+          setIsLoading(false);
+          if (res.success) {
+            console.log("Files sent successfully to the API:", res.files);
+            if (res.files && res.files?.length > 0) {
+              toast.info(JSON.stringify(res.files));
+              // setFilesList(res.files);
+            }
+            // Display uploaded file names in the UI
+          } else {
+            console.log("No files were uploaded:", res.message);
+            // Display an error message in the UI
+            toast.error(res.message);
+          }
+        } catch (e: unknown) {
+          toast.error(e);
+        }
       }
     }
-  }
+  };
 
-  // const handleFolderChange = (event) => {
-  //   const folder = event.target.files[0];
-  //   setSelectedFolder(folder);
-  // };
   return (
     <div className="plah-full w-full bg-bg-workspacenner">
       <h1 className="font-bold text-lg">DataBase</h1>
-      <div className="join w-full my-3">
-        <input
-          className="input input-bordered join-item w-full"
+      <DataTable />
+      <div className="flex w-full my-3">
+        <Input
+          className=""
+          radius="none"
           placeholder="http://example.com/info.pdf"
           value={inputValue}
           onChange={handleInputChange}
         />
-        <button
+        <Button
           type="button"
-          className="btn join-item rounded-r-full w-28"
+          className="rounded-r-full w-28"
           onClick={handleScan}
+          color="primary"
+          variant="bordered"
         >
           Scan
-        </button>
+        </Button>
       </div>
       <div className="">
-        <button
+        <Button
           type="button"
-          className="btn btn-outline btn-primary"
+          color="primary"
+          variant="ghost"
+          isLoading={isLoading}
           onClick={() => document.getElementById("test")!.click()}
         >
           Pick Folder
-        </button>
+        </Button>
         <input
           type="file"
+          // eslint-disable-next-line react/no-unknown-property
           directory=""
           webkitdirectory=""
           id="test"
@@ -64,7 +96,6 @@ function Database(): JSX.Element {
           onChange={handleFolderChange}
         />
       </div>
-      {/* {selectedFolder && <p>Selected folder: {selectedFolder}</p>} */}
     </div>
   );
 }
