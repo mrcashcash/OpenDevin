@@ -3,7 +3,8 @@ from typing import List, Mapping
 
 from termcolor import colored
 
-from agenthub.langchains_agent.utils.memory import LongTermMemory
+# from agenthub.langchains_agent.utils.memory import LongTermMemory
+from agenthub.monologue_agent.utils.memory import LongTermMemory
 from opendevin.agent import Agent
 from opendevin.state import State
 from opendevin.action import (

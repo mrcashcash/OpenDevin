@@ -1,5 +1,6 @@
-from agenthub.langchains_agent.utils.memory import LongTermMemory
+# from agenthub.langchains_agent.utils.memory import LongTermMemory
 from llama_index.readers.github import GithubRepositoryReader ,GithubClient
+from agenthub.monologue_agent.utils.memory import LongTermMemory
 from opendevin import config
 import re
 
