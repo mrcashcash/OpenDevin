@@ -41,7 +41,6 @@ class Session:
         self.controller: Optional[AgentController] = None
         self.agent: Optional[Agent] = None
         self.agent_task = None
-        asyncio.create_task(self.create_controller(), name="create controller") # FIXME: starting the docker container synchronously causes a websocket error...
 
     async def send_error(self, message):
         """Sends an error message to the client.
@@ -131,6 +130,9 @@ class Session:
         container_image = CONTAINER_IMAGE
         if start_event and "container_image" in start_event["args"]:
             container_image = start_event["args"]["container_image"]
+        max_iterations = 100
+        if start_event and "max_iterations" in start_event["args"]:
+            max_iterations = start_event["args"]["max_iterations"]
         if not os.path.exists(directory):
             print(f"Workspace directory {directory} does not exist. Creating it...")
             os.makedirs(directory)
@@ -139,7 +141,7 @@ class Session:
         AgentCls = Agent.get_cls(agent_cls)
         self.agent = AgentCls(llm)
         try:
-            self.controller = AgentController(self.agent, workdir=directory, container_image=container_image, callbacks=[self.on_agent_event])
+            self.controller = AgentController(self.agent, workdir=directory, max_iterations=max_iterations, container_image=container_image, callbacks=[self.on_agent_event])
         except Exception:
             print("Error creating controller.")
             await self.send_error("Error creating controller. Please check Docker is running using `docker ps`.")
