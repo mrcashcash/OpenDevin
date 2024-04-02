@@ -164,12 +164,15 @@ class Session:
             self.agent_task = await asyncio.create_task(self.controller.start_loop(task), name="agent loop")
         except Exception:
             await self.send_error("Error during task loop.")
+
     async def scan(self, start_event):
         url = start_event["args"]["task"]
+        type = start_event["args"]["type"]
         await self.send_message("Starting new Scan.."+url)
         knowledge_manager = KnowledgeManager(url)
-        self.agent_task = asyncio.create_task(knowledge_manager.strat_process(url), name="process")
+        self.agent_task = asyncio.create_task(knowledge_manager.strat_process(url,type), name="process")
         return
+    
     def on_agent_event(self, event: Observation | Action):
         """Callback function for agent events.
 

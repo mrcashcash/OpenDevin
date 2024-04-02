@@ -17,7 +17,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 import { FileData } from "../../types/types";
-import { getFilesData } from "../../services/knowledgeService";
+import { getFilesData, sendScanMessage } from "../../services/knowledgeService";
 import DeleteIcon from "../../assets/deleteicon";
 import IconDatabaseArrowLeft from "../../assets/database-arrow-left";
 import EyeIcon from "../../assets/eyeicon";
@@ -68,6 +68,7 @@ export function DataTable(): JSX.Element {
         );
       case "actions":
         const handleIngestFile = () => {
+          sendScanMessage(filedata.fileName, "file");
           console.log("Clicked:", filedata.fileName);
         };
 

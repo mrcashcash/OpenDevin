@@ -4,9 +4,9 @@ import { FileData, ServerResponse } from "../types/types";
 const { VITE_URL } = import.meta.env;
 const ALLOWED_EXT = ["js", "txt", "csv", "json", "py"];
 
-export function sendScanMessage(message: string): void {
+export function sendScanMessage(message: string, type: string): void {
   // store.dispatch(appendUserMessage(message));
-  const event = { action: "scan", args: { task: message } };
+  const event = { action: "scan", args: { task: message, type } };
   const eventString = JSON.stringify(event);
   socket.send(eventString);
 }

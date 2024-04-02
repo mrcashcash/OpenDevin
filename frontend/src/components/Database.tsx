@@ -22,7 +22,7 @@ function Database(): JSX.Element {
 
   const handleScan = useCallback((): void => {
     console.log("value", inputValue);
-    sendScanMessage(inputValue);
+    sendScanMessage(inputValue, "link");
   }, [inputValue]);
   // console.log("status:", status);
   const handleFolderChange = async (

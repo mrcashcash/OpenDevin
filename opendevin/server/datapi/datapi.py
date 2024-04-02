@@ -4,6 +4,7 @@ from typing import List
 
 from fastapi import File, HTTPException, Response, UploadFile 
 from opendevin import config
+from opendevin.server.datapi.utils import count_file_tokens
 
 UPLOAD_DIRECTORY = config.get_or_default('UPLOAD_DIR','.\\upload')
 
@@ -41,7 +42,7 @@ async def getfiles(directory=UPLOAD_DIRECTORY):
             filedata = {}
             file_path = os.path.join(root, filename)
             filedata['fileName'] = file_path
-            filedata['size'] = os.path.getsize(file_path)
+            filedata['size'] =  count_file_tokens(file_path)           #    os.path.getsize(file_path)
             filedata['status'] = "unprocessed"
             res.append(filedata)
     return res

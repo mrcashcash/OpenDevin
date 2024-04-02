@@ -1,4 +1,5 @@
 # from agenthub.langchains_agent.utils.memory import LongTermMemory
+import os
 from llama_index.readers.github import GithubRepositoryReader ,GithubClient
 from agenthub.monologue_agent.utils.memory import LongTermMemory
 from opendevin import config
@@ -12,7 +13,23 @@ class KnowledgeManager:
         print("KnowledgeManager-Initialized")
 
 
-    async def strat_process(self, url:str):
+    async def strat_process(self, url:str, type:str):
+        print("KnowledgeManager-Initialized-strat_process")
+        print(url, type)
+        if type == 'file':
+            self.processFile(url)
+        else:
+            self.processLink(url)
+            
+
+
+
+    def processFile(self, filepath:str):
+        print("KnowledgeManager-Initialized-processFile")
+        _, file_extension = os.path.splitext(filepath)
+        print("Processing file", _ + "ext: " + file_extension)
+    def processLink(self, url:str):
+        
         owner, repo = extract_username_and_repo(url)
         github_client= GithubClient(github_token)
         print("owner: %s, repo: %s" % (owner, repo))
@@ -27,6 +44,7 @@ class KnowledgeManager:
         branch_documents = reader.load_data(branch="main")
         for doc in branch_documents:
             print(doc.text)
+    
 
 
 
