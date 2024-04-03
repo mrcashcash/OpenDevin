@@ -3,6 +3,7 @@ import { Button, Input } from "@nextui-org/react";
 import { toast } from "react-toastify";
 import { sendFilesToAPI, sendScanMessage } from "../services/knowledgeService";
 import { DataTable } from "./ui/DataTable";
+import TreeC from "./ui/tree";
 
 function Database(): JSX.Element {
   const [inputValue, setInputValue] = useState("");
@@ -57,6 +58,7 @@ function Database(): JSX.Element {
     <div className="plah-full w-full bg-bg-workspacenner">
       <h1 className="font-bold text-lg">DataBase</h1>
       <DataTable />
+      {/* <TreeC /> */}
       <div className="flex w-full my-3">
         <Input
           className=""

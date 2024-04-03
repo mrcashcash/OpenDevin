@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import {
   Chip,
   ChipProps,
@@ -46,7 +47,10 @@ export function DataTable(): JSX.Element {
 
   const renderCell = useCallback((filedata: FileData, columnKey: React.Key) => {
     const cellValue = filedata[columnKey as keyof FileData];
-
+    const handleIngestFile = () => {
+      sendScanMessage(filedata.fileName, "file");
+      console.log("Clicked:", filedata.fileName);
+    };
     switch (columnKey) {
       case "fileName":
         return <p className="text-bold text-sm capitalize">{cellValue}</p>;
@@ -64,11 +68,6 @@ export function DataTable(): JSX.Element {
           </Chip>
         );
       case "actions":
-        const handleIngestFile = () => {
-          sendScanMessage(filedata.fileName, "file");
-          console.log("Clicked:", filedata.fileName);
-        };
-
         return (
           <div className="relative flex items-center gap-2">
             <Tooltip content="Details">
