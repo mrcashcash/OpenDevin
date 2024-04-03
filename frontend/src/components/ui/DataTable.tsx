@@ -1,6 +1,3 @@
-/* eslint-disable no-case-declarations */
-/* eslint-disable no-nested-ternary */
-/* eslint-disable import/no-extraneous-dependencies */
 import {
   Chip,
   ChipProps,

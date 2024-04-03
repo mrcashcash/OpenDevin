@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { useCallback, useState } from "react";
 import { Button, Input } from "@nextui-org/react";
 import { toast } from "react-toastify";

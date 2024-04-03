@@ -1,6 +1,10 @@
 # from agenthub.langchains_agent.utils.memory import LongTermMemory
 import os
+from llama_index.core import SimpleDirectoryReader
 from llama_index.readers.github import GithubRepositoryReader ,GithubClient
+from langchain_community.document_loaders.python import PythonLoader
+from langchain_community.document_loaders.directory import TextLoader
+from langchain_community.document_loaders.directory import DirectoryLoader
 from agenthub.monologue_agent.utils.memory import LongTermMemory
 from opendevin import config
 import re
@@ -19,31 +23,37 @@ class KnowledgeManager:
         if type == 'file':
             self.processFile(url)
         else:
-            self.processLink(url)
-            
-
-
+            docs = await self.processLink(url)
+            print("KnowledgeManager-Initialized-Docs",docs)
 
     def processFile(self, filepath:str):
         print("KnowledgeManager-Initialized-processFile")
+        directory = os.path.dirname(filepath)
         _, file_extension = os.path.splitext(filepath)
         print("Processing file", _ + "ext: " + file_extension)
-    def processLink(self, url:str):
+        print("Dir name: " + directory)
+        # if file_extension == ".py":
+        # loader = DirectoryLoader(directory, glob="**/*.*", show_progress=True,loader_cls=TextLoader)
+        # docs = loader.load()
+        documents = SimpleDirectoryReader(directory).load_data()
+        print("documents", documents)
+
+
+    async def processLink(self, url:str):
         
         owner, repo = extract_username_and_repo(url)
-        github_client= GithubClient(github_token)
+        github_client= GithubClient(github_token,verbose=True)
         print("owner: %s, repo: %s" % (owner, repo))
         print("github_token: %s" % github_token)
         reader = GithubRepositoryReader(
             github_client,
             owner=owner,
             repo=repo,
-            use_parser=False,
+            use_parser=True,
             verbose=True,)
         print("strat_process")
         branch_documents = reader.load_data(branch="main")
-        for doc in branch_documents:
-            print(doc.text)
+        return branch_documents
     
 
 
