@@ -39,6 +39,10 @@ async def get_litellm_agents():
     """
     return Agent.listAgents()
 
+@app.get("/default-model")
+def read_default_model():
+    return config.get_or_error("LLM_MODEL")
+
 @app.post("/upload/")
 async def upload_files(files: list[UploadFile] = File(...)):
     return await uploadfiles(files)
