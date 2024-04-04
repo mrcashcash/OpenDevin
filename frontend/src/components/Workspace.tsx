@@ -9,7 +9,7 @@ import CmdLine from "../assets/cmd-line";
 import Calendar from "../assets/calendar";
 import Earth from "../assets/earth";
 import Pencil from "../assets/pencil";
-import Database from "./Database";
+import DatabasePage from "./Database";
 import IconDatabaseCogOutline from "../assets/databaseicon";
 
 const tabData = {
@@ -36,7 +36,7 @@ const tabData = {
   database: {
     name: "Database",
     icon: <IconDatabaseCogOutline />,
-    component: <Database key="database" />,
+    component: <DatabasePage key="database" />,
   },
 };
 

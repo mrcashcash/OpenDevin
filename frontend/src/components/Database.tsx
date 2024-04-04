@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { useCallback, useState } from "react";
 import { Button, Input } from "@nextui-org/react";
 import { toast } from "react-toastify";
@@ -5,14 +6,10 @@ import { sendFilesToAPI, sendScanMessage } from "../services/knowledgeService";
 import { DataTable } from "./ui/DataTable";
 import TreeC from "./ui/tree";
 
-function Database(): JSX.Element {
+function DatabasePage(): JSX.Element {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  // const [filesList, setFilesList] = useState<FileData[]>([]);
-  // const { data, error, status } = useSelector(
-  //   (state: RootState) => state.database,
-  // );
-  // const [selectedFolder, setSelectedFolder] = useState("");
+
   const handleInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>): void => {
       setInputValue(event.target.value);
@@ -55,9 +52,12 @@ function Database(): JSX.Element {
   };
 
   return (
-    <div className="plah-full w-full bg-bg-workspacenner">
+    <div className="w-full">
       <h1 className="font-bold text-lg">DataBase</h1>
-      <DataTable />
+      <div className="flex space-x-2">
+        <TreeC />
+        <DataTable />
+      </div>
       {/* <TreeC /> */}
       <div className="flex w-full my-3">
         <Input
@@ -101,11 +101,10 @@ function Database(): JSX.Element {
   );
 }
 
-export default Database;
+export default DatabasePage;
 declare module "react" {
   interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
-    // extends React's HTMLAttributes
-    directory?: string; // remember to make these attributes optional....
+    directory?: string;
     webkitdirectory?: string;
   }
 }
