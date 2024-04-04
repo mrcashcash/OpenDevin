@@ -9,11 +9,18 @@
     "prettier",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
   ],
   "plugins": ["prettier"],
-  // "rules": {
-  //   "prettier/prettier": ["error"]
-  // },
+  "rules": {
+    "prettier/prettier": ["error"],
+  },
+  "settings": {
+    "react": {
+      "version": "detect",
+    },
+  },
   "overrides": [
     {
       "files": ["*.ts", "*.tsx"],
