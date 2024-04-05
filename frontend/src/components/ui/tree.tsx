@@ -1,122 +1,86 @@
-import React, { useEffect, useState } from "react";
-import { Checkbox } from "@nextui-org/react";
-import FolderIcon from "../../assets/folder";
-import FolderIconOpen from "../../assets/folderopen";
+import React, { useState, useEffect } from "react";
 import { FileData } from "../../types/types";
 import { getFilesData } from "../../services/knowledgeService";
+// Assuming you have your FileData interface defined
 
-interface Node {
+interface TreeNode {
   name: string;
-  path: string;
-  children: Node[];
-  files: string[];
+  children?: TreeNode[];
+  files?: FileData[];
 }
 
-interface TreeNodeProps {
-  node: Node;
-}
+const parseFolderPath = (filePath: string): string[] => {
+  return filePath.split("\\");
+};
 
-// interface TreeViewProps {
-//   paths: string[];
-// }
+const generateTree = (fileData: FileData[]): TreeNode[] => {
+  const tree: TreeNode[] = [];
 
-function TreeNode({ node }: TreeNodeProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const isDir = node.children.length > 0;
-  const toggleExpand = () => {
-    setIsExpanded(!isExpanded);
-  };
+  fileData.forEach((file) => {
+    const folders = parseFolderPath(file.fileName);
+    let currentNode = tree;
 
-  return (
-    <div>
-      <div
-        onClick={toggleExpand}
-        className="flex items-center text-gray-300 cursor-pointer my-1"
-      >
-        {!isDir && <Checkbox />}
-        {isDir && isExpanded && <FolderIconOpen className="mr-2" />}
-        {isDir && !isExpanded && <FolderIcon className="mr-2" />}
-        {node.name}
-      </div>
-      {isExpanded && (
-        <div className="flex flex-col justify-center ml-[20px]">
-          {node.children.map((child) => (
-            <TreeNode key={child.path} node={child} />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
+    if (folders[1] === "upload") {
+      folders.slice(2).forEach((folder, index) => {
+        const existingNode = currentNode.find((node) => node.name === folder);
 
-// const buildTree = (paths: string[]): Node[] => {
-//   const tree: Node[] = [];
-//   paths.forEach((path) => {
-//     const parts = path.split("/");
-//     let currentNode = tree;
-//     parts.forEach((part, index) => {
-//       const existingNode = currentNode.find((node) => node.name === part);
-//       if (existingNode) {
-//         currentNode = existingNode.children;
-//       } else {
-//         const newNode: Node = {
-//           name: part,
-//           path: parts.slice(0, index + 1).join("/"),
-//           children: [],
-//         };
-//         currentNode.push(newNode);
-//         currentNode = newNode.children;
-//       }
-//     });
-//   });
-//   return tree;
-// };
+        if (existingNode) {
+          currentNode = existingNode.children || [];
+        } else {
+          const newNode: TreeNode = { name: folder };
+          currentNode.push(newNode);
+          currentNode = newNode.children = [];
+        }
 
-// function TreeView({ paths }: TreeViewProps) {
-//   const treeData = buildTree(paths);
+        if (index === folders.length - 2) {
+          if (!currentNode) currentNode = [];
+          currentNode.push({ name: file.fileName }); // No need to include files here
+        }
+      });
+    }
+  });
 
-//   return (
-//     <div>
-//       {treeData.map((rootNode) => (
-//         <TreeNode key={rootNode.path} node={rootNode} />
-//       ))}
-//     </div>
-//   );
-// }
+  return tree;
+};
 
-function TreeC(): JSX.Element {
-  const [tree, setTree] = useState<Node[]>([]);
-
-  const buildTree = (data: FileData[]): Node[] => {
-    // Implement logic to build tree structure from fetched data
-    // You may need to parse the fetched data and organize it into a tree structure
-    // This could be similar to your previous implementation in buildTree function
-
-    // Example implementation:
-
-    data.forEach((filedata) => {
-      // Logic to parse path and build tree nodes
-    });
-
-    return tree;
+export function TreeC(): JSX.Element {
+  const [expandedFolders, setExpandedFolders] = useState<string[]>([]);
+  const [filesList, setFilesList] = useState<FileData[]>([]);
+  const handleFolderClick = (folderName: string) => {
+    setExpandedFolders((prevExpandedFolders) =>
+      prevExpandedFolders.includes(folderName)
+        ? prevExpandedFolders.filter((folder) => folder !== folderName)
+        : [...prevExpandedFolders, folderName],
+    );
   };
   useEffect(() => {
-    // Fetch folders and files data from the server
     const fetchData = async () => {
       try {
-        const data = await getFilesData(); // Implement your API call to fetch data
-        setTree(buildTree(data)); // Build the tree structure based on fetched data
-      } catch (error) {
-        console.error("Error fetching data:", error);
+        const res = await getFilesData();
+        console.log("res", res);
+        console.log("res.length", res.length);
+        setFilesList(res);
+      } catch (err) {
+        setFilesList([]);
+      } finally {
       }
     };
 
     fetchData();
   }, []);
+  const renderTree = (nodes: TreeNode[]) => {
+    return nodes.map((node) => (
+      <div key={node.name}>
+        <div onClick={() => handleFolderClick(node.name)}>{node.name}</div>
+        {expandedFolders.includes(node.name) &&
+          node.children &&
+          renderTree(node.children)}
+      </div>
+    ));
+  };
 
-  const renderTreeNodes = (nodes: Node[]) =>
-    nodes.map((node) => <TreeNode key={node.path} node={node} />);
+  const treeData = generateTree(filesList);
 
-  return <div>{renderTreeNodes(tree)}</div>;
+  return <div>{renderTree(treeData)}</div>;
 }
 export default TreeC;

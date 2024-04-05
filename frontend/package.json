@@ -40,7 +40,6 @@
     "web-vitals": "^2.1.4",
     "xterm-addon-fit": "^0.8.0",
     "react-toastify": "^10.0.5",
-    "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7"
   },
   "scripts": {

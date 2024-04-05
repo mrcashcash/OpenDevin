@@ -13,9 +13,9 @@
     "plugin:react-hooks/recommended",
   ],
   "plugins": ["prettier"],
-  "rules": {
-    "prettier/prettier": ["error"],
-  },
+  // "rules": {
+  //   "prettier/prettier": ["error"],
+  // },
   "settings": {
     "react": {
       "version": "detect",

@@ -95,30 +95,30 @@ export function DataTable(): JSX.Element {
     }
   }, []);
 
-  useEffect(() => {
-    setIsLoading(true);
-    const fetchData = async () => {
-      try {
-        const res = await getFilesData();
-        console.log("res", res);
-        console.log("res.length", res.length);
-        setFilesList(res);
-        if (res.length > 0) {
-          setIsEmpty(false);
-        } else {
-          setIsEmpty(true);
-        }
-      } catch (err) {
-        setFilesList([]);
-        toast.error(err);
-      } finally {
-        setIsLoading(false);
-        setDisabledKeys(new Set(["1"]));
-      }
-    };
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   const fetchData = async () => {
+  //     try {
+  //       const res = await getFilesData();
+  //       console.log("res", res);
+  //       console.log("res.length", res.length);
+  //       setFilesList(res);
+  //       if (res.length > 0) {
+  //         setIsEmpty(false);
+  //       } else {
+  //         setIsEmpty(true);
+  //       }
+  //     } catch (err) {
+  //       setFilesList([]);
+  //       toast.error(err);
+  //     } finally {
+  //       setIsLoading(false);
+  //       setDisabledKeys(new Set(["1"]));
+  //     }
+  //   };
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
 
   return (
     <Table

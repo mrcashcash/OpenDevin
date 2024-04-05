@@ -33,7 +33,7 @@ const tabData = {
     icon: <Earth />,
     component: <Browser key="browser" />,
   },
-  database: {
+  [TabOption.DATABASE]: {
     name: "Database",
     icon: <IconDatabaseCogOutline />,
     component: <DatabasePage key="database" />,
