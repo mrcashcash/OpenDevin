@@ -9,9 +9,7 @@ interface TreeNode {
   files?: FileData[];
 }
 
-const parseFolderPath = (filePath: string): string[] => {
-  return filePath.split("\\");
-};
+const parseFolderPath = (filePath: string): string[] => filePath.split("\\");
 
 const generateTree = (fileData: FileData[]): TreeNode[] => {
   const tree: TreeNode[] = [];
@@ -68,8 +66,8 @@ export function TreeC(): JSX.Element {
 
     fetchData();
   }, []);
-  const renderTree = (nodes: TreeNode[]) => {
-    return nodes.map((node) => (
+  const renderTree = (nodes: TreeNode[]) =>
+    nodes.map((node) => (
       <div key={node.name}>
         <div onClick={() => handleFolderClick(node.name)}>{node.name}</div>
         {expandedFolders.includes(node.name) &&
@@ -77,7 +75,6 @@ export function TreeC(): JSX.Element {
           renderTree(node.children)}
       </div>
     ));
-  };
 
   const treeData = generateTree(filesList);
 

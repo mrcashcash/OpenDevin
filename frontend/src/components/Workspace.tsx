@@ -5,6 +5,7 @@ import Calendar from "../assets/calendar";
 import Earth from "../assets/earth";
 import Pencil from "../assets/pencil";
 import { I18nKey } from "../i18n/declaration";
+// import { I18nKey } from "../i18n/translation.json";
 import { AllTabs, TabOption, TabType } from "../types/TabOption";
 import Browser from "./Browser";
 import CodeEditor from "./CodeEditor";
