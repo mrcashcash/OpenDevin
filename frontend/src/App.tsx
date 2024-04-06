@@ -1,13 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import "./App.css";
+import { useSelector } from "react-redux";
 import CogTooth from "./assets/cog-tooth";
 import ChatInterface from "./components/ChatInterface";
 import Errors from "./components/Errors";
 import SettingModal from "./components/SettingModal";
 import Terminal from "./components/Terminal";
 import Workspace from "./components/Workspace";
-import "react-toastify/dist/ReactToastify.css";
+import store, { RootState } from "./store";
+import { setInitialized } from "./state/globalSlice";
+import { fetchMsgTotal } from "./services/session";
+import LoadMessageModal from "./components/LoadMessageModal";
+import { ResFetchMsgTotal } from "./types/ResponseType";
 
 interface Props {
   setSettingOpen: (isOpen: boolean) => void;
@@ -27,7 +32,22 @@ function LeftNav({ setSettingOpen }: Props): JSX.Element {
 }
 
 function App(): JSX.Element {
+  const { initialized } = useSelector((state: RootState) => state.global);
   const [settingOpen, setSettingOpen] = useState(false);
+  const [loadMsgWarning, setLoadMsgWarning] = useState(false);
+
+  useEffect(() => {
+    if (!initialized) {
+      fetchMsgTotal()
+        .then((data: ResFetchMsgTotal) => {
+          if (data.msg_total > 0) {
+            setLoadMsgWarning(true);
+          }
+          store.dispatch(setInitialized(true));
+        })
+        .catch();
+    }
+  }, []);
 
   const handleCloseModal = () => {
     setSettingOpen(false);
@@ -37,7 +57,7 @@ function App(): JSX.Element {
     <div className="flex h-screen bg-bg-dark text-white">
       <LeftNav setSettingOpen={setSettingOpen} />
       <div className="flex flex-col grow gap-3 py-3 pr-3">
-        <div className="flex gap-3 grow">
+        <div className="flex gap-3 grow min-h-0">
           <div className="w-[500px] shrink-0 rounded-xl overflow-hidden border border-border">
             <ChatInterface />
           </div>
