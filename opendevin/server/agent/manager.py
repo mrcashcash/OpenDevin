@@ -13,6 +13,8 @@ from opendevin.controller.knowledge_manager import KnowledgeManager
 from opendevin.llm.llm import LLM
 from opendevin.observation import NullObservation, Observation, UserMessageObservation
 from opendevin.server.session import session_manager
+from opendevin.schema import ActionType
+from opendevin.logging import opendevin_logger as logger
 
 DEFAULT_API_KEY = config.get("LLM_API_KEY")
 DEFAULT_BASE_URL = config.get("LLM_BASE_URL")
@@ -70,14 +72,14 @@ class AgentManager:
             await self.send_error("Invalid action")
             return
 
-        if action == "initialize":
+        if action == ActionType.INIT:
             await self.create_controller(data)
-        elif action == "start":
+        elif action == ActionType.START:
             await self.start_task(data)
         else:
             if self.controller is None:
                 await self.send_error("No agent started. Please wait a second...")
-            elif action == "chat":
+            elif action == ActionType.CHAT:
                 self.controller.add_history(
                     NullAction(), UserMessageObservation(data["message"])
                 )
@@ -123,7 +125,7 @@ class AgentManager:
             model = LLM_MODEL
 
         if not os.path.exists(directory):
-            print(f"Workspace directory {directory} does not exist. Creating it...")
+            logger.info("Workspace directory %s does not exist. Creating it...", directory)
             os.makedirs(directory)
         directory = os.path.relpath(directory, os.getcwd())
         llm = LLM(model=model, api_key=api_key, base_url=api_base)
@@ -139,12 +141,12 @@ class AgentManager:
                 callbacks=[self.on_agent_event],
             )
         except Exception:
-            print("Error creating controller.")
+            logger.exception("Error creating controller.")
             await self.send_error(
                 "Error creating controller. Please check Docker is running using `docker ps`."
             )
             return
-        await self.send({"action": "initialize", "message": "Control loop started."})
+        await self.send({"action": ActionType.INIT, "message": "Control loop started."})
 
     async def start_task(self, start_event):
         """Starts a task for the agent.
