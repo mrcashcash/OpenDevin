@@ -1,0 +1,3 @@
+BASE_URL=http://localhost:1234/v1
+LLM_MODEL=gpt-4-0125-preview
+LLM_API_KEY=ffh1

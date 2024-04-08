@@ -1,5 +1,5 @@
-import socket from "../socket/socket";
 import { FileData, ServerResponse } from "../types/types";
+import socket from "./socket";
 
 const { VITE_URL } = import.meta.env;
 const ALLOWED_EXT = ["js", "txt", "csv", "json", "py"];
