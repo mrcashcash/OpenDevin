@@ -1,10 +1,8 @@
 # from agenthub.langchains_agent.utils.memory import LongTermMemory
 import os
 from llama_index.core import SimpleDirectoryReader
-from llama_index.readers.github import GithubRepositoryReader ,GithubClient
-from langchain_community.document_loaders.python import PythonLoader
-from langchain_community.document_loaders.directory import TextLoader
-from langchain_community.document_loaders.directory import DirectoryLoader
+# from llama_index.readers.github import GithubRepositoryReader ,GithubClient
+
 from agenthub.monologue_agent.utils.memory import LongTermMemory
 from opendevin import config
 import re
@@ -40,20 +38,20 @@ class KnowledgeManager:
 
 
     async def processLink(self, url:str):
-        
-        owner, repo = extract_username_and_repo(url)
-        github_client= GithubClient(github_token,verbose=True)
-        print("owner: %s, repo: %s" % (owner, repo))
-        print("github_token: %s" % github_token)
-        reader = GithubRepositoryReader(
-            github_client,
-            owner=owner,
-            repo=repo,
-            use_parser=True,
-            verbose=True,)
-        print("strat_process")
-        branch_documents = reader.load_data(branch="main")
-        return branch_documents
+        pass
+        # owner, repo = extract_username_and_repo(url)
+        # github_client= GithubClient(github_token,verbose=True)
+        # print("owner: %s, repo: %s" % (owner, repo))
+        # print("github_token: %s" % github_token)
+        # reader = GithubRepositoryReader(
+        #     github_client,
+        #     owner=owner,
+        #     repo=repo,
+        #     use_parser=True,
+        #     verbose=True,)
+        # print("strat_process")
+        # branch_documents = reader.load_data(branch="main")
+        # return branch_documents
     
 
 

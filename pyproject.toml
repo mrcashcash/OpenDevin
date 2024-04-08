@@ -24,6 +24,7 @@ numpy = "*"
 json-repair = "*"
 playwright = "*"
 pexpect = "*"
+python-multipart = "^0.0.9"
 
 [tool.poetry.group.llama-index.dependencies]
 llama-index = "*"
